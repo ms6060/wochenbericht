@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wochenrapport – e.visio</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #f2f2f2; color: #222; }
+
+/* ===== FORM VIEW ===== */
+#formView { display: block; }
+#reportView { display: none; }
+
+.topbar {
+  background: #fff;
+  border-bottom: 4px solid #E8820A;
+  padding: 12px 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.logo {
+  width: 42px; height: 42px;
+  background: linear-gradient(135deg, #E8820A, #f5b94a);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 20px; color: #fff; flex-shrink: 0;
+}
+.topbar h1 { font-size: 15px; font-weight: 700; color: #E8820A; }
+.topbar p  { font-size: 11px; color: #aaa; font-style: italic; }
+
+.card {
+  background: #fff; margin: 12px 12px 0;
+  border-radius: 12px; overflow: hidden;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.09);
+}
+.ctitle {
+  background: #FDF3E3; border-left: 4px solid #E8820A;
+  padding: 9px 14px; font-weight: 700; font-size: 13px; color: #E8820A;
+}
+.ctitle small { display: block; font-weight: 400; font-style: italic; font-size: 11px; color: #ccc; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; }
+.f {
+  padding: 10px 14px;
+  border-bottom: 1px solid #f0f0f0;
+  border-right: 1px solid #f0f0f0;
+}
+.f:nth-child(even) { border-right: none; }
+.f.full { grid-column: 1/-1; border-right: none; }
+.f label { display: block; font-size: 11px; font-weight: 700; color: #777; margin-bottom: 4px; }
+.f label small { display: block; font-weight: 400; font-style: italic; color: #ccc; font-size: 10px; }
+.f input, .f textarea {
+  width: 100%; font-size: 16px; font-family: Arial, sans-serif;
+  border: 1px solid #ddd; border-radius: 8px;
+  padding: 8px 10px; background: #fafafa; color: #222;
+  -webkit-appearance: none;
+}
+.f input:focus, .f textarea:focus { outline: none; border-color: #E8820A; background: #fff; }
+.f textarea { min-height: 70px; resize: none; }
+.f input[readonly] { background: #f5f5f5; color: #aaa; }
+
+/* Leistungen table */
+.lt { width: 100%; border-collapse: collapse; }
+.lt thead tr { background: #FAD9A0; }
+.lt thead th {
+  padding: 8px 8px; font-size: 11px; font-weight: 700;
+  color: #4A2800; text-align: left; border-bottom: 2px solid #E8820A;
+}
+.lt tbody tr:nth-child(even) { background: #fafafa; }
+.lt tbody td { padding: 6px 8px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+.lt .pos { font-size: 11px; color: #ccc; font-weight: 700; text-align: center; width: 26px; }
+.lt .dde { font-size: 13px; font-weight: 600; }
+.lt .dro { font-size: 10px; color: #bbb; font-style: italic; }
+.lt input[type=number] {
+  width: 62px; font-size: 16px; text-align: center;
+  border: 1px solid #ddd; border-radius: 7px;
+  padding: 6px 4px; background: #fff; -webkit-appearance: none;
+}
+.lt input[type=number]:focus { outline: none; border-color: #E8820A; }
+.lt .unit { font-size: 12px; color: #aaa; text-align: center; width: 40px; }
+.lt .exd {
+  font-size: 15px; border: 1px solid #ddd; border-radius: 7px;
+  padding: 6px 8px; width: 100%; background: #fff; -webkit-appearance: none;
+}
+.lt .exu {
+  width: 42px; font-size: 14px; border: 1px solid #ddd; border-radius: 7px;
+  padding: 6px 4px; text-align: center; background: #fff; -webkit-appearance: none;
+}
+
+/* Big action button */
+.bigbtn {
+  display: block; width: calc(100% - 24px);
+  margin: 14px 12px 0;
+  padding: 18px; border: none; border-radius: 12px;
+  font-size: 17px; font-weight: 700; font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #E8820A, #f5a52a);
+  color: #fff; box-shadow: 0 4px 16px rgba(232,130,10,0.4);
+  cursor: pointer; touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.footnote {
+  margin: 14px 12px 30px;
+  font-size: 10px; color: #ccc; font-style: italic; text-align: center; line-height: 1.6;
+}
+
+/* ===== REPORT VIEW ===== */
+@media screen {
+  #reportView {
+    background: #fff;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .rpt-actions {
+    display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .rpt-btn {
+    flex: 1; min-width: 120px;
+    padding: 14px 12px; border: none; border-radius: 10px;
+    font-size: 15px; font-weight: 700; font-family: Arial, sans-serif;
+    cursor: pointer; touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .rpt-back { background: #f0f0f0; color: #555; }
+  .rpt-share { background: linear-gradient(135deg,#E8820A,#f5a52a); color: #fff; }
+  .rpt-print { background: linear-gradient(135deg,#555,#777); color: #fff; }
+}
+
+/* Report content */
+.rpt-header {
+  background: #E8820A; color: #fff;
+  padding: 12px 16px; border-radius: 8px 8px 0 0;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.rpt-header h2 { font-size: 16px; }
+.rpt-header p { font-size: 11px; opacity: 0.8; font-style: italic; }
+
+.rpt-meta {
+  border: 1px solid #e0e0e0; border-top: none;
+  display: grid; grid-template-columns: 1fr 1fr;
+}
+.rpt-meta-cell {
+  padding: 7px 12px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;
+  font-size: 12px;
+}
+.rpt-meta-cell:nth-child(even) { border-right: none; }
+.rpt-meta-cell b { display: block; font-size: 11px; color: #E8820A; }
+.rpt-meta-cell em { display: block; font-size: 10px; color: #aaa; font-style: italic; }
+
+.rpt-section {
+  margin-top: 16px;
+  border-left: 3px solid #E8820A;
+  padding-left: 10px;
+  font-size: 14px; font-weight: 700; color: #E8820A;
+  margin-bottom: 6px;
+}
+.rpt-section span { font-weight: 400; font-style: italic; font-size: 12px; color: #aaa; margin-left: 6px; }
+
+table.rpt-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+.rpt-table thead tr { background: #FAD9A0; }
+.rpt-table thead th {
+  padding: 7px 8px; font-size: 11px; font-weight: 700;
+  color: #4A2800; text-align: left; border-bottom: 2px solid #E8820A;
+}
+.rpt-table tbody tr:nth-child(even) { background: #fafafa; }
+.rpt-table tbody td { padding: 6px 8px; border-bottom: 1px solid #eee; font-size: 13px; vertical-align: middle; }
+.rpt-table .menge-val { font-weight: 700; color: #E8820A; text-align: center; }
+.rpt-table .unit-val { text-align: center; color: #888; font-size: 12px; }
+.dro-small { font-size: 10px; color: #bbb; font-style: italic; }
+
+.rpt-bemer {
+  border: 1px solid #eee; border-radius: 8px;
+  padding: 10px 12px; font-size: 13px; color: #555;
+  min-height: 48px; background: #fafafa;
+}
+
+.rpt-sig {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px;
+}
+.rpt-sig-box { padding-top: 36px; border-top: 2px solid #E8820A; font-size: 11px; color: #aaa; }
+.rpt-sig-box b { display: block; color: #555; font-size: 12px; }
+
+.rpt-foot {
+  margin-top: 20px; padding-top: 8px;
+  border-top: 1px solid #eee;
+  font-size: 10px; color: #bbb; font-style: italic;
+}
+
+@media print {
+  #formView { display: none !important; }
+  #reportView { display: block !important; }
+  .rpt-actions { display: none !important; }
+  body { background: #fff; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== FORM ===== -->
+<div id="formView">
+
+<div class="topbar">
+  <div class="logo">e</div>
+  <div>
+    <h1>Wochenrapport</h1>
+    <p>Raport săptămânal – e.visio elektrovisionen gmbh</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ctitle">Kopfdaten <small>Date generale</small></div>
+  <div class="grid2">
+    <div class="f full">
+      <label>Auftragnehmer <small>Antreprenor</small></label>
+      <input type="text" id="f_an" value="SC Atiroler Energy SRL" readonly>
+    </div>
+    <div class="f full">
+      <label>Auftraggeber <small>Beneficiar</small></label>
+      <input type="text" id="f_ag" value="e.visio elektrovisionen gmbh" readonly>
+    </div>
+    <div class="f">
+      <label>Techniker vor Ort <small>Tehnician la fața locului</small></label>
+      <input type="text" id="f_tech" placeholder="Name...">
+    </div>
+    <div class="f">
+      <label>Kalenderwoche <small>Săptămâna</small></label>
+      <input type="number" id="f_kw" placeholder="z.B. 14" min="1" max="53">
+    </div>
+    <div class="f">
+      <label>Zeitraum <small>Perioada</small></label>
+      <input type="text" id="f_zr" placeholder="30.03.–04.04.2026">
+    </div>
+    <div class="f">
+      <label>Datum <small>Data</small></label>
+      <input type="date" id="f_dat">
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ctitle">Erbrachte Leistungen <small>Lucrări executate</small></div>
+  <table class="lt">
+    <thead>
+      <tr>
+        <th style="width:26px">#</th>
+        <th>Beschreibung / Descriere</th>
+        <th style="width:68px;text-align:center">Menge</th>
+        <th style="width:42px;text-align:center">E.</th>
+      </tr>
+    </thead>
+    <tbody id="ltbody">
+      <tr>
+        <td class="pos">1</td>
+        <td><div class="dde">Montage Kabeltasse</div><div class="dro">Montarea cupei pentru cablu</div></td>
+        <td style="text-align:center"><input type="number" id="mg_0" min="0" step="0.5" placeholder="0"></td>
+        <td class="unit">m</td>
+      </tr>
+      <tr>
+        <td class="pos">2</td>
+        <td><div class="dde">Montage Evilonrohre</div><div class="dro">Montarea țevilor Evilon</div></td>
+        <td style="text-align:center"><input type="number" id="mg_1" min="0" step="0.5" placeholder="0"></td>
+        <td class="unit">m</td>
+      </tr>
+      <tr>
+        <td class="pos">3</td>
+        <td><div class="dde">Kabelverlegung 0,6–4 mm²</div><div class="dro">Punerea cablurilor 0,6–4 mm²</div></td>
+        <td style="text-align:center"><input type="number" id="mg_2" min="0" step="0.5" placeholder="0"></td>
+        <td class="unit">m</td>
+      </tr>
+      <tr>
+        <td class="pos">4</td>
+        <td><div class="dde">Kabelverlegung 6–10 mm²</div><div class="dro">Punerea cablurilor 6–10 mm²</div></td>
+        <td style="text-align:center"><input type="number" id="mg_3" min="0" step="0.5" placeholder="0"></td>
+        <td class="unit">m</td>
+      </tr>
+      <tr>
+        <td class="pos">5</td>
+        <td><div class="dde">Kabelverlegung 16–25 mm²</div><div class="dro">Punerea cablurilor 16–25 mm²</div></td>
+        <td style="text-align:center"><input type="number" id="mg_4" min="0" step="0.5" placeholder="0"></td>
+        <td class="unit">m</td>
+      </tr>
+      <tr>
+        <td class="pos">6</td>
+        <td><div class="dde">Beleuchtungsmontage</div><div class="dro">Montarea iluminatului</div></td>
+        <td style="text-align:center"><input type="number" id="mg_5" min="0" step="0.5" placeholder="0"></td>
+        <td class="unit">Stk.</td>
+      </tr>
+      <tr>
+        <td class="pos">7</td>
+        <td><div class="dde">Anschluss Niederspannungsgeräte</div><div class="dro">Conectarea dispozitivelor de joasă tensiune</div></td>
+        <td style="text-align:center"><input type="number" id="mg_6" min="0" step="0.5" placeholder="0"></td>
+        <td class="unit">Stk.</td>
+      </tr>
+      <tr>
+        <td class="pos">8</td>
+        <td><input class="exd" type="text" id="ed_7" placeholder="Sonstige Leistung..."></td>
+        <td style="text-align:center"><input type="number" id="mg_7" min="0" step="0.5" placeholder="0"></td>
+        <td><input class="exu" type="text" id="eu_7" placeholder="m"></td>
+      </tr>
+      <tr>
+        <td class="pos">9</td>
+        <td><input class="exd" type="text" id="ed_8" placeholder="Sonstige Leistung..."></td>
+        <td style="text-align:center"><input type="number" id="mg_8" min="0" step="0.5" placeholder="0"></td>
+        <td><input class="exu" type="text" id="eu_8" placeholder="m"></td>
+      </tr>
+      <tr>
+        <td class="pos">10</td>
+        <td><input class="exd" type="text" id="ed_9" placeholder="Sonstige Leistung..."></td>
+        <td style="text-align:center"><input type="number" id="mg_9" min="0" step="0.5" placeholder="0"></td>
+        <td><input class="exu" type="text" id="eu_9" placeholder="m"></td>
+      </tr>
+      <tr>
+        <td class="pos">11</td>
+        <td><input class="exd" type="text" id="ed_10" placeholder="Sonstige Leistung..."></td>
+        <td style="text-align:center"><input type="number" id="mg_10" min="0" step="0.5" placeholder="0"></td>
+        <td><input class="exu" type="text" id="eu_10" placeholder="m"></td>
+      </tr>
+      <tr>
+        <td class="pos">12</td>
+        <td><input class="exd" type="text" id="ed_11" placeholder="Sonstige Leistung..."></td>
+        <td style="text-align:center"><input type="number" id="mg_11" min="0" step="0.5" placeholder="0"></td>
+        <td><input class="exu" type="text" id="eu_11" placeholder="m"></td>
+      </tr>
+      <tr>
+        <td class="pos">13</td>
+        <td><input class="exd" type="text" id="ed_12" placeholder="Sonstige Leistung..."></td>
+        <td style="text-align:center"><input type="number" id="mg_12" min="0" step="0.5" placeholder="0"></td>
+        <td><input class="exu" type="text" id="eu_12" placeholder="m"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <div class="ctitle">Bemerkungen <small>Observații / Impedimente</small></div>
+  <div class="f full" style="border-right:none">
+    <textarea id="f_bem" placeholder="Freitext / Text liber..."></textarea>
+  </div>
+</div>
+
+<button class="bigbtn" id="btnShow">💾 Speichern</button>
+
+<div class="footnote">
+  Die abzurechnenden Leistungen beziehen sich auf die vereinbarten Subunternehmerleistungen vom 10.02.2026.<br>
+  Lucrările se referă la serviciile subcontractate convenite din 10.02.2026.
+</div>
+
+</div><!-- /formView -->
+
+<!-- ===== REPORT ===== -->
+<div id="reportView">
+
+  <div class="rpt-actions">
+    <button class="rpt-btn rpt-back" id="btnBack">◀ Zurück</button>
+    <button class="rpt-btn rpt-share" id="btnShare">⬆ Teilen / WhatsApp</button>
+    <button class="rpt-btn rpt-print" id="btnPrint">🖨 Drucken / PDF</button>
+  </div>
+
+  <div id="rptContent"></div>
+
+</div><!-- /reportView -->
+
+<script>
+var positions = [
+  {pos:"1",  de:"Montage Kabeltasse",              ro:"Montarea cupei pentru cablu",                 unit:"m",    mgId:"mg_0", edId:null,   euId:null},
+  {pos:"2",  de:"Montage Evilonrohre",              ro:"Montarea țevilor Evilon",                     unit:"m",    mgId:"mg_1", edId:null,   euId:null},
+  {pos:"3",  de:"Kabelverlegung 0,6–4 mm²",        ro:"Punerea cablurilor 0,6–4 mm²",               unit:"m",    mgId:"mg_2", edId:null,   euId:null},
+  {pos:"4",  de:"Kabelverlegung 6–10 mm²",         ro:"Punerea cablurilor 6–10 mm²",                unit:"m",    mgId:"mg_3", edId:null,   euId:null},
+  {pos:"5",  de:"Kabelverlegung 16–25 mm²",        ro:"Punerea cablurilor 16–25 mm²",               unit:"m",    mgId:"mg_4", edId:null,   euId:null},
+  {pos:"6",  de:"Beleuchtungsmontage",              ro:"Montarea iluminatului",                       unit:"Stk.", mgId:"mg_5", edId:null,   euId:null},
+  {pos:"7",  de:"Anschluss Niederspannungsgeräte", ro:"Conectarea dispozitivelor de joasă tensiune", unit:"Stk.", mgId:"mg_6", edId:null,   euId:null},
+  {pos:"8",  de:"", ro:"", unit:"", mgId:"mg_7",  edId:"ed_7",  euId:"eu_7"},
+  {pos:"9",  de:"", ro:"", unit:"", mgId:"mg_8",  edId:"ed_8",  euId:"eu_8"},
+  {pos:"10", de:"", ro:"", unit:"", mgId:"mg_9",  edId:"ed_9",  euId:"eu_9"},
+  {pos:"11", de:"", ro:"", unit:"", mgId:"mg_10", edId:"ed_10", euId:"eu_10"},
+  {pos:"12", de:"", ro:"", unit:"", mgId:"mg_11", edId:"ed_11", euId:"eu_11"},
+  {pos:"13", de:"", ro:"", unit:"", mgId:"mg_12", edId:"ed_12", euId:"eu_12"}
+];
+
+function v(id) { var e = document.getElementById(id); return e ? e.value : ''; }
+
+// Set today
+document.getElementById('f_dat').valueAsDate = new Date();
+
+function getData() {
+  var rows = [];
+  positions.forEach(function(p) {
+    var mg = parseFloat(v(p.mgId)) || 0;
+    var de = p.edId ? v(p.edId) : p.de;
+    var unit = p.euId ? v(p.euId) : p.unit;
+    rows.push({pos:p.pos, de:de, ro:p.ro, unit:unit, mg:mg});
+  });
+  return {
+    an:   v('f_an'),
+    ag:   v('f_ag'),
+    tech: v('f_tech') || '–',
+    kw:   v('f_kw') || '–',
+    zr:   v('f_zr') || '–',
+    dat:  v('f_dat') || '–',
+    bem:  v('f_bem') || '–',
+    rows: rows
+  };
+}
+
+function buildReport() {
+  var d = getData();
+  var tableRows = '';
+  d.rows.forEach(function(p) {
+    if (!p.de && !p.mg) return;
+    tableRows +=
+      '<tr>' +
+      '<td style="text-align:center;font-size:11px;color:#ccc">'+p.pos+'</td>' +
+      '<td><span style="font-weight:700">'+p.de+'</span>'+(p.ro?'<div class="dro-small">'+p.ro+'</div>':'')+'</td>' +
+      '<td class="menge-val">'+(p.mg>0?p.mg:'')+'</td>' +
+      '<td class="unit-val">'+p.unit+'</td>' +
+      '</tr>';
+  });
+
+  document.getElementById('rptContent').innerHTML =
+    '<div class="rpt-header">' +
+      '<div><h2>Wochenrapport</h2><p>Raport săptămânal</p></div>' +
+      '<div style="text-align:right;font-size:12px">KW '+d.kw+'<br>'+d.dat+'</div>' +
+    '</div>' +
+    '<div class="rpt-meta">' +
+      '<div class="rpt-meta-cell"><b>Auftragnehmer <em>Antreprenor</em></b>'+d.an+'</div>' +
+      '<div class="rpt-meta-cell"><b>Auftraggeber <em>Beneficiar</em></b>'+d.ag+'</div>' +
+      '<div class="rpt-meta-cell"><b>Techniker vor Ort <em>Tehnician</em></b>'+d.tech+'</div>' +
+      '<div class="rpt-meta-cell"><b>Zeitraum <em>Perioada</em></b>'+d.zr+'</div>' +
+    '</div>' +
+    '<div class="rpt-section">Erbrachte Leistungen <span>Lucrări executate</span></div>' +
+    '<table class="rpt-table">' +
+      '<thead><tr>' +
+        '<th style="width:28px">#</th>' +
+        '<th>Leistung / Lucrare</th>' +
+        '<th style="width:68px;text-align:center">Menge<br><span style="font-weight:400;font-size:10px">Cantitate</span></th>' +
+        '<th style="width:42px;text-align:center">E.<br><span style="font-weight:400;font-size:10px">U.M.</span></th>' +
+      '</tr></thead>' +
+      '<tbody>'+(tableRows||'<tr><td colspan="4" style="color:#bbb;text-align:center;padding:12px">–</td></tr>')+'</tbody>' +
+    '</table>' +
+    '<div class="rpt-section" style="margin-top:14px">Bemerkungen <span>Observații</span></div>' +
+    '<div class="rpt-bemer">'+d.bem+'</div>' +
+    '<div class="rpt-sig">' +
+      '<div class="rpt-sig-box"><b>Auftragnehmer</b>SC Atiroler Energy SRL<br><em style="font-size:10px;color:#ccc">Antreprenor – Data / Semnătură</em></div>' +
+      '<div class="rpt-sig-box"><b>Auftraggeber</b>e.visio elektrovisionen gmbh<br><em style="font-size:10px;color:#ccc">Beneficiar – Datum / Unterschrift</em></div>' +
+    '</div>' +
+    '<div class="rpt-foot">' +
+      'Die abzurechnenden Leistungen beziehen sich auf die vereinbarten Subunternehmerleistungen vom 10.02.2026.<br>' +
+      'Lucrările de facturat se referă la serviciile subcontractate convenite din 10.02.2026.<br><br>' +
+      'e.visio elektrovisionen gmbh · Kugelfangweg 16, 6020 Innsbruck · www.evisio.at' +
+    '</div>';
+}
+
+// ── Button handlers ──
+document.getElementById('btnShow').addEventListener('click', function() {
+  // Lock all inputs
+  var inputs = document.querySelectorAll('#formView input:not([id="f_an"]):not([id="f_ag"]), #formView textarea');
+  inputs.forEach(function(el) { el.setAttribute('readonly', true); el.style.background = '#f5f5f5'; el.style.color = '#555'; });
+  // Change button to "Bearbeiten"
+  var btn = document.getElementById('btnShow');
+  btn.textContent = '✏️ Bearbeiten';
+  btn.style.background = '#888';
+  btn.style.boxShadow = 'none';
+  btn.dataset.locked = '1';
+  // Show report
+  buildReport();
+  document.getElementById('formView').style.display = 'none';
+  document.getElementById('reportView').style.display = 'block';
+  window.scrollTo(0, 0);
+});
+
+document.getElementById('btnBack').addEventListener('click', function() {
+  // Unlock all inputs
+  var inputs = document.querySelectorAll('#formView input:not([id="f_an"]):not([id="f_ag"]), #formView textarea');
+  inputs.forEach(function(el) { el.removeAttribute('readonly'); el.style.background = ''; el.style.color = ''; });
+  // Restore Speichern button
+  var btn = document.getElementById('btnShow');
+  btn.textContent = '💾 Speichern';
+  btn.style.background = '';
+  btn.style.boxShadow = '';
+  btn.dataset.locked = '0';
+  document.getElementById('reportView').style.display = 'none';
+  document.getElementById('formView').style.display = 'block';
+  window.scrollTo(0, 0);
+});
+
+document.getElementById('btnPrint').addEventListener('click', function() {
+  window.print();
+});
+
+document.getElementById('btnShare').addEventListener('click', function() {
+  var d = getData();
+  var leistungen = '';
+  d.rows.forEach(function(p) {
+    if (p.mg > 0 && p.de) leistungen += '  • ' + p.de + ': *' + p.mg + ' ' + p.unit + '*\n';
+  });
+
+  var msg =
+    '📋 *Wochenrapport / Raport săptămânal*\n' +
+    '_e.visio elektrovisionen gmbh_\n\n' +
+    '👷 *Techniker:* ' + d.tech + '\n' +
+    '📅 *KW:* ' + d.kw + '  |  *Zeitraum:* ' + d.zr + '\n' +
+    '📆 *Datum:* ' + d.dat + '\n\n' +
+    '📦 *Leistungen:*\n' + (leistungen || '  –\n') + '\n' +
+    '💬 *Bemerkungen:* ' + d.bem + '\n\n' +
+    '_Ref: Subunternehmerleistungen 10.02.2026_';
+
+  if (navigator.share) {
+    navigator.share({ title: 'Wochenrapport KW ' + d.kw, text: msg })
+      .catch(function(){});
+  } else {
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  }
+});
+</script>
+</body>
+</html>
