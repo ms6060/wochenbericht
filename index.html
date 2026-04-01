@@ -353,8 +353,7 @@ table.rpt-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
 
   <div class="rpt-actions">
     <button class="rpt-btn rpt-back" id="btnBack">◀ Zurück</button>
-    <button class="rpt-btn rpt-share" id="btnShare">⬆ Teilen / WhatsApp</button>
-    <button class="rpt-btn rpt-print" id="btnPrint">🖨 Drucken / PDF</button>
+    <button class="rpt-btn rpt-print" id="btnPrint">📄 PDF erstellen &amp; teilen</button>
   </div>
 
   <div id="rptContent"></div>
@@ -488,30 +487,6 @@ document.getElementById('btnPrint').addEventListener('click', function() {
   window.print();
 });
 
-document.getElementById('btnShare').addEventListener('click', function() {
-  var d = getData();
-  var leistungen = '';
-  d.rows.forEach(function(p) {
-    if (p.mg > 0 && p.de) leistungen += '  • ' + p.de + ': *' + p.mg + ' ' + p.unit + '*\n';
-  });
-
-  var msg =
-    '📋 *Wochenrapport / Raport săptămânal*\n' +
-    '_e.visio elektrovisionen gmbh_\n\n' +
-    '👷 *Techniker:* ' + d.tech + '\n' +
-    '📅 *KW:* ' + d.kw + '  |  *Zeitraum:* ' + d.zr + '\n' +
-    '📆 *Datum:* ' + d.dat + '\n\n' +
-    '📦 *Leistungen:*\n' + (leistungen || '  –\n') + '\n' +
-    '💬 *Bemerkungen:* ' + d.bem + '\n\n' +
-    '_Ref: Subunternehmerleistungen 10.02.2026_';
-
-  if (navigator.share) {
-    navigator.share({ title: 'Wochenrapport KW ' + d.kw, text: msg })
-      .catch(function(){});
-  } else {
-    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
-  }
-});
 </script>
 </body>
 </html>
