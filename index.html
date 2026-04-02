@@ -654,8 +654,8 @@ function generateAndMail() {
   var techName = d.tech !== '–' ? d.tech.replace(/\s+/g, '_') : 'Techniker';
   var fileName = 'Wochenrapport_KW' + d.kw + '_' + techName + '.pdf';
 
-  // ── PDF als Base64 für EmailJS ──
-  var pdfBase64 = doc.output('datauristring'); // data:application/pdf;base64,...
+  // ── PDF lokal speichern ──
+  doc.save(fileName);
 
   // Leistungen als Text-Tabelle für die Mail
   var leistungenText = '';
@@ -670,9 +670,7 @@ function generateAndMail() {
     datum:       d.dat,
     techniker:   d.tech,
     leistungen:  leistungenText || '–',
-    bemerkungen: d.bem,
-    pdf_name:    fileName,
-    pdf_content: pdfBase64
+    bemerkungen: d.bem
   };
 
   emailjs.send('service_ea4ctsa', 'template_390w4j1', templateParams)
