@@ -360,7 +360,10 @@ table.rpt-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
 
 </div><!-- /reportView -->
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
+emailjs.init('cfZQwmVF73CU6FBlh');
+
 var positions = [
   {pos:"1",  de:"Montage Kabeltasse",              ro:"Montarea cupei pentru cablu",                 unit:"m",    mgId:"mg_0", edId:null,   euId:null},
   {pos:"2",  de:"Montage Evilonrohre",              ro:"Montarea țevilor Evilon",                     unit:"m",    mgId:"mg_1", edId:null,   euId:null},
@@ -651,24 +654,44 @@ function generateAndMail() {
   var techName = d.tech !== '–' ? d.tech.replace(/\s+/g, '_') : 'Techniker';
   var fileName = 'Wochenrapport_KW' + d.kw + '_' + techName + '.pdf';
 
-  // ── PDF speichern + Mail öffnen ──
-  doc.save(fileName);
+  // ── PDF als Base64 für EmailJS ──
+  var pdfBase64 = doc.output('datauristring'); // data:application/pdf;base64,...
 
-  setTimeout(function() {
-    var empfaenger = 'rapport@evisio.at';
-    var betreff = encodeURIComponent('Wochenrapport KW ' + d.kw + ' – ' + d.tech);
-    var body = encodeURIComponent(
-      'Guten Tag,\n\n' +
-      'anbei der Wochenrapport für KW ' + d.kw + ' (' + d.zr + ').\n\n' +
-      'Techniker: ' + d.tech + '\n' +
-      'Zeitraum: ' + d.zr + '\n\n' +
-      'Bitte die PDF im Anhang nicht vergessen.\n\n' +
-      'Mit freundlichen Grüßen\n' + d.tech
-    );
-    window.location.href = 'mailto:' + empfaenger + '?subject=' + betreff + '&body=' + body;
-    btn.textContent = '📄 PDF & E-Mail';
-    btn.disabled = false;
-  }, 1000);
+  // Leistungen als Text-Tabelle für die Mail
+  var leistungenText = '';
+  d.rows.forEach(function(p) {
+    if (!p.de && !p.mg) return;
+    if (p.mg > 0) leistungenText += p.pos + '. ' + p.de + ': ' + p.mg + ' ' + p.unit + '\n';
+  });
+
+  var templateParams = {
+    kw:          d.kw,
+    zeitraum:    d.zr,
+    datum:       d.dat,
+    techniker:   d.tech,
+    leistungen:  leistungenText || '–',
+    bemerkungen: d.bem,
+    pdf_name:    fileName,
+    pdf_content: pdfBase64
+  };
+
+  emailjs.send('service_ea4ctsa', 'template_o5b918n', templateParams)
+    .then(function() {
+      btn.textContent = '✅ Gesendet!';
+      btn.style.background = 'linear-gradient(135deg,#2e7d32,#43a047)';
+      setTimeout(function() {
+        btn.textContent = '📄 PDF & E-Mail';
+        btn.style.background = '';
+        btn.disabled = false;
+      }, 3000);
+    }, function(error) {
+      console.error('EmailJS Fehler:', error);
+      // Fallback: PDF lokal speichern + mailto
+      doc.save(fileName);
+      alert('E-Mail konnte nicht direkt gesendet werden.\nPDF wurde heruntergeladen – bitte manuell senden.');
+      btn.textContent = '📄 PDF & E-Mail';
+      btn.disabled = false;
+    });
 }
 
 </script>
