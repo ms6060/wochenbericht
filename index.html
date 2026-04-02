@@ -685,10 +685,9 @@ function generateAndMail() {
         btn.disabled = false;
       }, 3000);
     }, function(error) {
-      console.error('EmailJS Fehler:', error);
-      // Fallback: PDF lokal speichern + mailto
+      var msg = 'Status: ' + (error.status || '?') + '\nText: ' + (error.text || JSON.stringify(error));
+      alert('EmailJS Fehler:\n' + msg);
       doc.save(fileName);
-      alert('E-Mail konnte nicht direkt gesendet werden.\nPDF wurde heruntergeladen – bitte manuell senden.');
       btn.textContent = '📄 PDF & E-Mail';
       btn.disabled = false;
     });
